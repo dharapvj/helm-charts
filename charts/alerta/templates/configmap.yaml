@@ -4,7 +4,12 @@ data:
   alertad.conf: |
     {{- if .Values.alertaConfig }}
     {{ range $key, $value := .Values.alertaConfig }}
+    {{- /* The Python configuration file format is crazy. It needs single quote for all values, except boolean, number AND arrays!  */}}
+    {{- if or (eq $value "True") (eq $value "False") (gt (int $value) 0 ) ( and (hasPrefix "[" $value ) (hasSuffix "]" $value ) ) }}
     {{ $key }} = {{ $value | nindent 4 | trim }}
+    {{- else }}
+    {{ $key }} = '{{ $value | nindent 4 | trim }}'
+    {{- end }}
     {{- end }}
     {{- end }}
     {{ if .Values.postgresql.enabled -}}
