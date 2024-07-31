@@ -29,4 +29,15 @@ entries:
     urls:
     - https://github.com/dharapvj/helm-charts/releases/download/alerta-0.4.1/alerta-0.4.1.tgz
     version: 0.4.1
-generated: "2024-01-17T16:17:40.884256117Z"
+  argocd-apps:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-07-31T05:51:45.656097766Z"
+    description: A Helm chart for Kubernetes
+    digest: e19426a52541ba7946ac93902a46ec72751d35b9c4c8c799c1f0f0f02857ba32
+    name: argocd-apps
+    type: application
+    urls:
+    - https://github.com/dharapvj/helm-charts/releases/download/argocd-apps-0.1.0/argocd-apps-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-07-31T05:51:45.656110109Z"
