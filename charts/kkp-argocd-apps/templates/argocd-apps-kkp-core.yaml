@@ -30,6 +30,12 @@ spec:
   destinations:
   - namespace: kubermatic
     server: https://kubernetes.default.svc
+  - namespace: mla
+    server: https://kubernetes.default.svc
+  - namespace: iap
+    server: https://kubernetes.default.svc
+  - namespace: argocd
+    server: https://kubernetes.default.svc
 
 {{ if .Values.oauth.enable }}
 ---
