@@ -32,6 +32,16 @@ entries:
   argocd-apps:
   - apiVersion: v2
     appVersion: 1.16.1
+    created: "2024-11-14T05:34:38.976749966Z"
+    description: Manage kkp seeds via ArgoCD apps
+    digest: 44dd613f4bfdd3a91e9e07553f5ac5c5cc6b2c55a31048477f25dee64718bb77
+    name: argocd-apps
+    type: application
+    urls:
+    - https://github.com/dharapvj/helm-charts/releases/download/argocd-apps-0.1.5/argocd-apps-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: 1.16.1
     created: "2024-11-14T04:52:28.636889454Z"
     description: Manage kkp seeds via ArgoCD apps
     digest: 4301ef660c301f0d720843ba95a52614ca241961a61119290598f6c6f278176f
@@ -80,4 +90,4 @@ entries:
     urls:
     - https://github.com/dharapvj/helm-charts/releases/download/argocd-apps-0.1.0/argocd-apps-0.1.0.tgz
     version: 0.1.0
-generated: "2024-11-14T04:52:28.636914651Z"
+generated: "2024-11-14T05:34:38.976775654Z"
