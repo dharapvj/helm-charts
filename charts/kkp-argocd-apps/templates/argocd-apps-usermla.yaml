@@ -31,11 +31,6 @@ spec:
   destinations:
   - namespace: mla
     server: https://kubernetes.default.svc
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: mla
 {{ end }}
 
 {{ if and .Values.userMla.enable .Values.userMla.minio.enable }}
@@ -64,8 +59,10 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mla
-  {{- if .Values.userMla.minio.autoSync }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.userMla.minio.autoSync }}
     automated: {}
   {{ end }}
 {{ end }}
@@ -98,8 +95,10 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mla
-  {{- if .Values.userMla.secrets.autoSync }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.userMla.secrets.autoSync }}
     automated: {}
   {{ end }}
 ---
@@ -130,8 +129,10 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mla
-  {{- if .Values.userMla.minioLifecycleMgr.autoSync }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.userMla.minioLifecycleMgr.autoSync }}
     automated: {}
   {{ end }}
 {{ end }}
@@ -162,8 +163,10 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mla
-  {{- if .Values.userMla.grafana.autoSync }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.userMla.grafana.autoSync }}
     automated: {}
   {{ end }}
 {{ end }}
@@ -194,8 +197,10 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mla
-  {{- if .Values.userMla.consul.autoSync }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.userMla.consul.autoSync }}
     automated: {}
   {{ end }}
 {{ end }}
@@ -225,8 +230,10 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mla
-  {{- if .Values.userMla.alertmanagerProxy.autoSync }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.userMla.alertmanagerProxy.autoSync }}
     automated: {}
   {{ end }}
 {{ end }}
@@ -257,8 +264,10 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mla
-  {{- if .Values.userMla.cortex.autoSync }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.userMla.cortex.autoSync }}
     automated: {}
   {{ end }}
 
@@ -297,8 +306,10 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mla
-  {{- if .Values.userMla.lokiDistributed.autoSync }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.userMla.lokiDistributed.autoSync }}
     automated: {}
   {{ end }}
 {{ end }}
@@ -329,8 +340,10 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mla
-  {{- if .Values.userMla.iapMla.autoSync }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.userMla.iapMla.autoSync }}
     automated: {}
   {{ end }}
 {{ end }}
