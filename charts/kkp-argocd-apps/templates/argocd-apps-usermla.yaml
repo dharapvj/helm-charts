@@ -32,7 +32,12 @@ spec:
   - namespace: mla
     server: https://kubernetes.default.svc
 {{ end }}
-
+---
+# in case of mla, we define a configmap so - we will need to create NS explicitly.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mla
 {{ if and .Values.userMla.enable .Values.userMla.minio.enable }}
 ---
 apiVersion: argoproj.io/v1alpha1
