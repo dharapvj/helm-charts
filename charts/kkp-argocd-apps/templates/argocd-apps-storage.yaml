@@ -47,6 +47,13 @@ spec:
 
 ---
 # create required buckets as needed
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: minio
+
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
