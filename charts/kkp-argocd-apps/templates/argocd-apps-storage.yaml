@@ -62,20 +62,29 @@ metadata:
 data:
   minio-create.sh: |
     #! /bin/bash
-    set -euo pipefail
-    set -x
-    # TODO: should wait for minio to become available first!
+    set -uo pipefail
+    # set -x
+    max_retry=60 # wait for 1 hour for minio to become available
+    counter=0
+    until :> /dev/tcp/minio.minio.svc.cluster.local/9000
+    do
+      sleep 60
+      [[ counter -eq $max_retry ]] && echo "Failed! Maximum retries reached!" && exit 2
+      ((counter++))
+      echo "Minio not available. Trying again. Try #$counter"
+    done
+    set -e
     # TEST
     echo "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"
     mc config host add minio http://minio.minio.svc.cluster.local:9000 "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"
     mc mb minio/usercluster-etcd-backups
     mc mb minio/metering-{{ .Values.seed }}-seed
-    # mc admin user add minio Pbea0rmZF1z5yPRt TTkGamIu9SibifSR
-    # mc admin policy attach minio readwrite --user Pbea0rmZF1z5yPRt
+    # mc admin user add minio XX YY
+    # mc admin policy attach minio readwrite --user XX
 {{ if .Values.velero.enable }}
     mc mb minio/velero-backup-{{ .Values.environment }}
-    # mc admin user add minio Pbea0rmZF1z5yPRt TTkGamIu9SibifSR
-    # mc admin policy attach minio readwrite --user Pbea0rmZF1z5yPRt
+    # mc admin user add minio AA BB
+    # mc admin policy attach minio readwrite --user AA
 {{ end }}
 
 ---
@@ -91,8 +100,7 @@ spec:
       containers:
         - name: mc
           image: quay.io/minio/mc
-          command: []
-          args:
+          command:
             - /bin/sh
             - -c
             - /script/minio-create.sh
