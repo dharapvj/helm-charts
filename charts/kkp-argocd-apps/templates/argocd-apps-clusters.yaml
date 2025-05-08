@@ -12,46 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{ if .Values.velero.enable }}
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: clusters
-  namespace: argocd
-spec:
-  project: default
-  sources:
-  - repoURL: '{{ .Values.repoURL }}'
-    targetRevision: {{ template "git-tag-version" . }}
-    path: {{ .Values.valuesPathPrefix }}
-    ref: values
-  destination:
-    server: 'https://kubernetes.default.svc'
-    # namespace: velero
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-  {{- if .Values.velero.autoSync }}
-    automated: {}
-  {{ end }}
-{{ end }}
+# {{ if .Values.velero.enable }}
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: clusters
+#   namespace: argocd
+# spec:
+#   project: default
+#   sources:
+#   - repoURL: '{{ .Values.repoURL }}'
+#     targetRevision: {{ template "git-tag-version" . }}
+#     path: {{ .Values.valuesPathPrefix }}
+#     ref: values
+#   destination:
+#     server: 'https://kubernetes.default.svc'
+#     # namespace: velero
+#   syncPolicy:
+#     syncOptions:
+#       - CreateNamespace=true
+#   {{- if .Values.velero.autoSync }}
+#     automated: {}
+#   {{ end }}
+# {{ end }}
 
 
-    path: common/components/kkp-apps
-    targetRevision: {{ .Values.environment }}-kkp-{{ .Values.kkpVersion }}
-    # FIXME: This could be potentially issue when we have multiple applications to install
-    # directory:
-    #   include: 'ingress-nginx.yaml'
-    # kustomize:
-    #   patches:
-    #     - target:
-    #         kind: ApplicationInstallation
-    #         name: ingress-nginx
-    #       patch: |-
-    #         - op: replace
-    #           path: /spec/applicationRef/version
-    #           value: {{ .Values.nginxIngress.appDefinitionVersion }}
-    #         - op: replace
-    #           path: /spec/valuesBlock
-    #           value: |-
+#     path: common/components/kkp-apps
+#     targetRevision: {{ .Values.environment }}-kkp-{{ .Values.kkpVersion }}
+#     # FIXME: This could be potentially issue when we have multiple applications to install
+#     # directory:
+#     #   include: 'ingress-nginx.yaml'
+#     # kustomize:
+#     #   patches:
+#     #     - target:
+#     #         kind: ApplicationInstallation
+#     #         name: ingress-nginx
+#     #       patch: |-
+#     #         - op: replace
+#     #           path: /spec/applicationRef/version
+#     #           value: {{ .Values.nginxIngress.appDefinitionVersion }}
+#     #         - op: replace
+#     #           path: /spec/valuesBlock
+#     #           value: |-
