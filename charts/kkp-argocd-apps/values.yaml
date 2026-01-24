@@ -87,7 +87,7 @@ iapSeedMla:
   autoSync: false
 
 #logging
-promtail:
+alloy:
   enable: false
   autoSync: false
 loki:

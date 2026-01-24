@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{ if .Values.promtail.enable }}
+{{ if .Values.alloy.enable }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: promtail
+  name: alloy
   namespace: argocd
 spec:
   project: default
   # TODO: This assumes that we pull the charts from git repo. Currently, no support to pull charts from helm registry directly.
   sources:
   - repoURL: '{{ .Values.kkpRepoURL }}'
-    path: {{ template "kkp.chart.pathprefix" . }}/charts/logging/promtail
+    path: {{ template "kkp.chart.pathprefix" . }}/charts/logging/alloy
     targetRevision: {{ .Values.kkpVersion }}
     helm:
       valueFiles:
@@ -42,7 +42,7 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
-  {{- if .Values.promtail.autoSync }}
+  {{- if .Values.alloy.autoSync }}
     automated: {}
   {{ end }}
 {{ end }}
