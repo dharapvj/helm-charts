@@ -283,7 +283,7 @@ metadata:
   name: cortex-runtime-config
   namespace: mla
 data:
-  runtime-config.yaml: 'overrides:'
+  runtime_config.yaml: 'overrides:'
 {{ end }}
 
 {{ if and .Values.userMla.enable .Values.userMla.lokiDistributed.enable }}

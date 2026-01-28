@@ -28,7 +28,7 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # WE should be updating this chart version to be in sync with the KKP version it supports.
-version: 2.29.0
+version: 2.29.1
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
