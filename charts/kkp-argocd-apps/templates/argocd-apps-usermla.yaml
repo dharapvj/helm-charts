@@ -300,6 +300,7 @@ spec:
     path: {{ template "kkp.chart.pathprefix" . }}/charts/mla/loki-distributed
     targetRevision: {{ .Values.kkpVersion }}
     helm:
+      releaseName: loki-distributed
       valueFiles:
         - values.yaml
         - $values/{{ template "argo-cd-apps.user-mla-values-file.path" . }}
