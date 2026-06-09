@@ -78,6 +78,8 @@ kind: Application
 metadata:
   name: nginx-ingress-controller
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1" # Deploys first
 spec:
   project: default
   sources:
@@ -121,6 +123,8 @@ kind: Application
 metadata:
   name: cert-manager
   namespace: argocd
+  annotations:
+      argocd.argoproj.io/sync-wave: "-1" # Deploys first
 spec:
   project: default
   sources:
