@@ -246,6 +246,15 @@ spec:
         factor: 1
         maxDuration: "3m0s"
   {{- if .Values.seedExtras.autoSync }}
-    automated: {}
+    # selfHeal (unlike the other Applications in this chart) because
+    # UserProjectBinding carries an ownerReference to its Project that KKP's
+    # controller adds post-creation -- if a Project ever gets reconciled with
+    # even a momentary UID change, Kubernetes' garbage collector cascade-
+    # deletes any binding whose owner reference no longer resolves. Without
+    # selfHeal, plain `automated: {}` only reacts to git changes, not to a
+    # resource disappearing from the live cluster, so the deleted binding
+    # just sits OutOfSync until someone clicks Sync manually.
+    automated:
+      selfHeal: true
   {{ end }}
 {{ end }}
