@@ -45,6 +45,13 @@ nginx:
 certManager:
   enable: false
   autoSync: true
+# Not one of KKP's own charts -- pulled straight from the upstream
+# kubernetes-sigs Helm repo. Only relevant for seeds without a kubeone addon
+# equivalent (e.g. kind-based local seeds).
+metricsServer:
+  enable: false
+  autoSync: false
+  chartVersion: 3.12.2
 seedSettings:
   enable: false
   autoSync: false

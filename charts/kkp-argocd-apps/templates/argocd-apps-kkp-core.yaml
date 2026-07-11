@@ -156,6 +156,41 @@ spec:
   {{ end }}
 {{ end }}
 
+{{ if .Values.metricsServer.enable }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metrics-server
+  namespace: argocd
+spec:
+  project: default
+  # Upstream chart directly, NOT one of the kubermatic/kubermatic charts --
+  # metrics-server isn't shipped by KKP itself. On real kubeone-based envs it
+  # comes for free as a kubeone default addon; kind-based seeds have no
+  # kubeone in the loop, so it's managed here instead.
+  sources:
+  - repoURL: https://kubernetes-sigs.github.io/metrics-server/
+    chart: metrics-server
+    targetRevision: {{ .Values.metricsServer.chartVersion }}
+    helm:
+      values: |
+        # kind's kubelet serving certs aren't valid for the kubelet's
+        # in-cluster IP/hostname, so metrics-server's TLS verification of the
+        # kubelet API needs to be relaxed.
+        args:
+          - --kubelet-insecure-tls
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  {{- if .Values.metricsServer.autoSync }}
+    automated: {}
+  {{ end }}
+{{ end }}
+
 {{ if and .Values.seedSettings.enable .Values.isMasterSeed }}
 ---
 apiVersion: argoproj.io/v1alpha1
