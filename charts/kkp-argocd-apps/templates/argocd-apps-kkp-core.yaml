@@ -155,7 +155,7 @@ spec:
     automated: {}
   {{ end }}
 {{ end }}
-
+---
 {{ if .Values.envoyGatewayController.enable }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -226,6 +226,7 @@ spec:
         name: {{ .secretName }}
       mode: Terminate
   {{- end }}
+{{- if .Values.envoyGatewayController.gateway.routes }}
 ---
 # TLS certificates backing the Gateway listeners above, generated from the same
 # .Values.gateway.routes list so each hostname/secretName pair is only defined once.
@@ -233,7 +234,7 @@ apiVersion: v1
 kind: List
 metadata: {}
 items:
-{{- range .Values.envoyGatewayController.gateway.routes }}
+{{- range $.Values.envoyGatewayController.gateway.routes }}
 - apiVersion: cert-manager.io/v1
   kind: Certificate
   metadata:
@@ -251,7 +252,9 @@ items:
     - digital signature
     - key encipherment
 {{- end }}
+{{- end }}
 
+{{- if .Values.envoyGatewayController.gateway.accessNamespaces }}
 ---
 # Namespaces that host HTTPRoutes attached to the Gateway above need this label for its
 # allowedRoutes namespace selector to match them (see .Values.gateway.accessNamespaces).
@@ -266,6 +269,7 @@ items:
     name: {{ . }}
     labels:
       kubermatic.io/gateway-access: "true"
+{{- end }}
 {{- end }}
 
 ---
