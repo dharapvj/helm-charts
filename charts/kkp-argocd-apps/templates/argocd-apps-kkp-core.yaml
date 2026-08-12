@@ -164,7 +164,7 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
+  sources:
   - repoURL: '{{ .Values.kkpRepoURL }}'
     path: {{ template "kkp.chart.pathprefix" . }}/charts/envoy-gateway-controller
     targetRevision: {{ .Values.kkpVersion }}
@@ -187,6 +187,12 @@ spec:
 # FIXME: this is not working well because there is no Gateway CRD installed before hand.
 # What I have done in non-argocd setup is to install the Gateway CRD first and then create the Gateway resource.
 # Currently the argodemo is updated to install the Gateway CRD first and then create the Gateway resource.
+# Also create the namespace since Argo Apps are getting installed before KKP installer
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.envoyGatewayController.gateway.namespace }}
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
