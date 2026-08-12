@@ -156,6 +156,122 @@ spec:
   {{ end }}
 {{ end }}
 
+{{ if .Values.envoyGatewayController.enable }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: envoy-gateway-controller
+  namespace: argocd
+spec:
+  project: default
+  source:
+  - repoURL: '{{ .Values.kkpRepoURL }}'
+    path: {{ template "kkp.chart.pathprefix" . }}/charts/envoy-gateway-controller
+    targetRevision: {{ .Values.kkpVersion }}
+    helm:
+      valueFiles:
+        - values.yaml
+        - $values/{{ template "argo-cd-apps.env-specific-values-file.path" . }}
+        - $values/{{ template "argo-cd-apps.seed-override-values-file.path" . }}
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: envoy-gateway-controller
+  syncPolicy:
+  {{- if .Values.envoyGatewayController.autoSync }}
+    automated: {}
+  {{ end }}
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+# FIXME: this is not working well because there is no Gateway CRD installed before hand.
+# What I have done in non-argocd setup is to install the Gateway CRD first and then create the Gateway resource.
+# Currently the argodemo is updated to install the Gateway CRD first and then create the Gateway resource.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.envoyGatewayController.gateway.clusterIssuer }}
+  labels:
+    app.kubernetes.io/name: kubermatic
+  name: kubermatic
+  namespace: {{ .Values.envoyGatewayController.gateway.namespace }}
+spec:
+  gatewayClassName: {{ .Values.envoyGatewayController.gateway.gatewayClassName }}
+  listeners:
+  - allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            kubermatic.io/gateway-access: "true"
+    name: http
+    port: 80
+    protocol: HTTP
+  {{- range .Values.envoyGatewayController.gateway.routes }}
+  - allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            kubermatic.io/gateway-access: "true"
+    hostname: {{ .hostname }}
+    name: {{ .secretName }}
+    port: 443
+    protocol: HTTPS
+    tls:
+      certificateRefs:
+      - group: ""
+        kind: Secret
+        name: {{ .secretName }}
+      mode: Terminate
+  {{- end }}
+---
+# TLS certificates backing the Gateway listeners above, generated from the same
+# .Values.gateway.routes list so each hostname/secretName pair is only defined once.
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+{{- range .Values.envoyGatewayController.gateway.routes }}
+- apiVersion: cert-manager.io/v1
+  kind: Certificate
+  metadata:
+    name: {{ .secretName }}
+    namespace: {{ $.Values.envoyGatewayController.gateway.namespace }}
+  spec:
+    dnsNames:
+    - {{ .hostname }}
+    issuerRef:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: {{ $.Values.envoyGatewayController.gateway.clusterIssuer }}
+    secretName: {{ .secretName }}
+    usages:
+    - digital signature
+    - key encipherment
+{{- end }}
+
+---
+# Namespaces that host HTTPRoutes attached to the Gateway above need this label for its
+# allowedRoutes namespace selector to match them (see .Values.gateway.accessNamespaces).
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+{{- range .Values.envoyGatewayController.gateway.accessNamespaces }}
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: {{ . }}
+    labels:
+      kubermatic.io/gateway-access: "true"
+{{- end }}
+
+---
+{{ end }}
+
+
 {{ if .Values.metricsServer.enable }}
 ---
 apiVersion: argoproj.io/v1alpha1

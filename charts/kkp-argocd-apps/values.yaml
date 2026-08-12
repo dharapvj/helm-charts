@@ -39,9 +39,29 @@ userMlaValuesFileName: values-usermla.yaml
 dex:
   enable: false
   autoSync: false
+# TODO: In future, remove nginx app completely as we move to envoy-gateway-controller instead.
 nginx:
   enable: false
   autoSync: true
+envoyGatewayController:
+  enable: false
+  autoSync: true
+  # Gateway API "kubermatic" Gateway (see envoyGatewayController) plus the cert-manager
+  # Certificates backing its TLS listeners. Both are generated from `gateway.routes` below -
+  # populate that list per-environment in the environment's values-argocd-apps.yaml since
+  # hostname patterns differ across environments/seeds and can't be derived generically here.
+  gateway:
+    namespace: kubermatic
+    gatewayClassName: kubermatic-envoy-gateway
+    # clusterIssuer: ca-prod
+    # - hostname: <full FQDN>
+    #   secretName: <TLS secret name; also reused as the Gateway listener name and Certificate name>
+    routes: []
+    # Namespaces that HTTPRoutes live in need `kubermatic.io/gateway-access: "true"` for the
+    # Gateway's allowedRoutes namespace selector to pick them up. List them here (per-environment,
+    # since the set of namespaces/apps deployed differs) instead of labelling them by hand.
+    accessNamespaces: []
+
 certManager:
   enable: false
   autoSync: true
